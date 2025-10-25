@@ -17,3 +17,16 @@ async def start_handler(message: types.Message):
             await message.answer("Your profile saved to database successfully!")
         else:
             await message.answer("You are already exist on database.")
+
+async def delete_me(message: types.Message):
+    async for session in get_session():
+        UsersModel = ORMbase(Users, session)
+        user = await UsersModel.get(user_id=message.from_user.id)
+
+        if user:
+            await UsersModel.delete(
+                user_id=message.from_user.id,
+            )
+            await message.answer("Your profile deleted successfully!")
+        else:
+            await message.answer("Your profile not found.")
